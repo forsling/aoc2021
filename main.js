@@ -6,4 +6,7 @@ import day2 from './solutions/day2.js';
 //day2();
 
 import day3 from './solutions/day3.js';
-day3();
+//day3();
+
+import day4 from './solutions/day4.js';
+day4();
