@@ -29,12 +29,15 @@ class Line {
         console.log(lineString);
         let pattern = /(\d+),(\d+) -> (\d+),(\d+)/;
         let match = lineString.match(pattern);
-        this.from = { x: parseInt(match[1]), y: parseInt(match[2]) };
-        this.to = { x: parseInt(match[3]), y: parseInt(match[4]) };
+        let from = { x: parseInt(match[1]), y: parseInt(match[2]) };
+        let to = { x: parseInt(match[3]), y: parseInt(match[4]) };
+        this.from = from;
+        this.to = to;
 
-        this.vertical = this.from.x === this.to.x 
-        this.horizontal = this.from.y === this.to.y;
-        this.diagonal = !this.vertical && !this.horizontal;
+        this.vertical = from.x === to.x 
+        this.horizontal = from.y === to.y;
+        let xyEqualDist = Math.abs(from.x - to.x) === Math.abs(from.y - to.y);
+        this.goodDiagonal = !this.vertical && !this.horizontal && xyEqualDist;
     }
 }
 
@@ -83,6 +86,19 @@ let executePart1 = (input) => {
             for (let i = lower; i <= lower + distance; i++) {
                 grid[i][fromX]++;
             }
+        }
+        let drawDiag = (x, y, targetX, targetY) => {
+            grid[y][x]++;
+            if (x == targetX || y == targetY) {
+                return;
+            }
+            let newX = x + (x < targetX ? 1 : -1);
+            let newY = y + (y < targetY ? 1 : -1);
+
+            drawDiag(newX, newY, targetX, targetY);
+        }
+        if (line.goodDiagonal) {
+            drawDiag(fromX, fromY, toX, toY);
         }
     }
 
