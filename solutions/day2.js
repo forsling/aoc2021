@@ -1,7 +1,5 @@
-
-
 import { getInput } from '../input.js';
-let realInput = await getInput(2);
+let input = await getInput(2);
 
 let exampleInput = [
     "forward 5",
@@ -12,7 +10,7 @@ let exampleInput = [
     "forward 2"
 ];
 
-const execute = (input) => {
+const executePart1 = (input) => {
     let hpos = 0;
     let depth = 0;
 
@@ -25,7 +23,7 @@ const execute = (input) => {
         let command = instruction[0];
         let magnitude = Number.parseInt(instruction[1]);
         switch (command) {
-            case "forward": 
+            case "forward":
                 hpos += magnitude;
                 break;
             case "up":
@@ -41,11 +39,47 @@ const execute = (input) => {
 
     console.log(`Stopped at horizontal position ${hpos} and depth ${depth}`);
     let finalPos = hpos * depth;
-    console.log(`Final position (multiplied) is ${finalPos}`);
+    return finalPos;
+}
+
+const executePart2 = (input) => {
+    let hpos = 0;
+    let depth = 0;
+    let aim = 0;
+
+    for (let rawInstruction of input) {
+        let instruction = rawInstruction.split(" ");
+        if (instruction.length !== 2) {
+            console.warn(`Invalid input: ${rawInstruction}: Output may be wrong!`);
+            continue;
+        }
+        let command = instruction[0];
+        let magnitude = Number.parseInt(instruction[1]);
+        switch (command) {
+            case "forward": 
+                hpos += magnitude;
+                depth += magnitude * aim;
+                break;
+            case "up":
+                aim -= magnitude;
+                break;
+            case "down":
+                aim += magnitude;
+                break;
+            default:
+                console.error("Unknown command: " + rawInstruction);
+        }
+    }
+
+    console.log(`Stopped at horizontal position ${hpos} and depth ${depth}`);
+    let finalPos = hpos * depth;
     return finalPos;
 }
 
 export default () => {
-    let p1 = execute(exampleInput);
-    console.log("Day 2: " + p1);
+    let p1 = executePart1(input);
+    console.log("Day 2 Part 1: " + p1);
+
+    let p2 = executePart2(input);
+    console.log("Day 2 Part 2: " + p2);
 }
