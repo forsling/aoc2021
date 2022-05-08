@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-
 let exampleData = [
     "0,9 -> 5,9",
     "8,0 -> 0,8",
@@ -14,10 +13,9 @@ let exampleData = [
 ]
 
 const printGrid = (grid) => {
-    console.log("  0 1 2 3 4 5 6 7 8 9")
     for (let i = 0; i < grid.length; i++) {
-        let line = `${i} `;
-        for (let j = 0; j < grid.length; j++) { 
+        let line = "";
+        for (let j = 0; j < grid[0].length; j++) { 
             line += `${grid[i][j]} `;
         }
         console.log(line.trim() + "\n");
@@ -26,96 +24,78 @@ const printGrid = (grid) => {
 
 class Line {
     constructor(lineString) {
-        console.log(lineString);
-        let pattern = /(\d+),(\d+) -> (\d+),(\d+)/;
-        let match = lineString.match(pattern);
-        let from = { x: parseInt(match[1]), y: parseInt(match[2]) };
-        let to = { x: parseInt(match[3]), y: parseInt(match[4]) };
-        this.from = from;
-        this.to = to;
+        const pattern = /(\d+),(\d+) -> (\d+),(\d+)/;
+        const match = lineString.match(pattern);
+        this.from = { x: parseInt(match[1]), y: parseInt(match[2]) };
+        this.to = { x: parseInt(match[3]), y: parseInt(match[4]) };
+    }
 
-        this.vertical = from.x === to.x 
-        this.horizontal = from.y === to.y;
-        let xyEqualDist = Math.abs(from.x - to.x) === Math.abs(from.y - to.y);
-        this.goodDiagonal = !this.vertical && !this.horizontal && xyEqualDist;
+    isVertical() {
+        return this.from.x === this.to.x;
+    }
+
+    isHorizontal() {
+        return this.from.y === this.to.y;
+    }
+
+    isDiagonal45Deg() {
+        return !this.isVertical() 
+            && !this.isHorizontal() 
+            && Math.abs(this.from.x - this.to.x) === Math.abs(this.from.y - this.to.y);
     }
 }
 
-function gridCount(grid) {
-    let count = 0;
-    for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid.length; j++) { 
-            if (grid[j][i] >= 2) {
-                count++
-            }
-        }
-    }
-    return count;
-}
-
-
-let executePart1 = (input) => {
+const execute = (input) => {
     const gridSize = 1000;
-    let grid = Array(gridSize);
+    const grid = Array(gridSize);
     for (let i = 0; i < grid.length; i++) {
         grid[i] = Array(gridSize).fill(0);
     }
 
-    let allLines = [];
-    for (let line of input) {
-        allLines.push(new Line(line));
+    const drawLine = (grid, x, y, toX, toY) => {
+        grid[y][x]++;
+        if (x == toX && y == toY) {
+            return;
+        }
+        let newX = x + (x == toX ? 0 : x < toX ? 1 : -1);
+        let newY = y + (y == toY ? 0 : y < toY ? 1 : -1);
+        drawLine(grid, newX, newY, toX, toY);
     }
 
-    let nonDiagonal = allLines.filter((l) => !l.diagonal);
-
-    let drawLine = (line) => {
-        let fromX = line.from.x;
-        let fromY = line.from.y;
-        let toX = line.to.x;
-        let toY = line.to.y;
-        if (line.horizontal) {
-            let lower = Math.min(fromX, toX);
-            let distance = Math.abs(fromX - toX);
-            for (let i = lower; i <= lower + distance; i++) {
-                grid[fromY][i]++;
-            }
-        }
-        if (line.vertical) {
-            let lower = Math.min(fromY, toY);
-            let distance = Math.abs(fromY - toY);
-            for (let i = lower; i <= lower + distance; i++) {
-                grid[i][fromX]++;
-            }
-        }
-        let drawDiag = (x, y, targetX, targetY) => {
-            grid[y][x]++;
-            if (x == targetX || y == targetY) {
-                return;
-            }
-            let newX = x + (x < targetX ? 1 : -1);
-            let newY = y + (y < targetY ? 1 : -1);
-
-            drawDiag(newX, newY, targetX, targetY);
-        }
-        if (line.goodDiagonal) {
-            drawDiag(fromX, fromY, toX, toY);
-        }
+    for (let l of input) {
+        drawLine(grid, l.from.x, l.from.y, l.to.x, l.to.y);
     }
 
-    for (let l of nonDiagonal) {
-        drawLine(l);
+    const gridCount = (grid, cellEval) => {
+        let count = 0;
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[0].length; col++) { 
+                if (cellEval(grid[row][col])) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
-    //printGrid(grid);
-
-    let result = gridCount(grid);
-    console.log(`Overlapping cells: ${result}`);
+    
+    let result = gridCount(grid, (cellVal) => cellVal >= 2);
+    return result;
 }
 
 export default () => {
     let rawInput = readFileSync("input/day5.txt", 'utf8');
     let inputLines = rawInput.split("\n");
-    executePart1(inputLines);
 
+    const allLines = [];
+    for (let line of inputLines) {
+        allLines.push(new Line(line));
+    }
+
+    const nonDiagLines = allLines.filter((l) => l.isHorizontal() || l.isVertical());
+    const p1 = execute(nonDiagLines);
+    console.log(`Day 5 Part 1: ${p1}`);
+
+    const allGoodLines = allLines.filter((l) => l.isHorizontal() || l.isVertical() || l.isDiagonal45Deg());
+    const p2 = execute(allGoodLines);
+    console.log(`Day 5 Part 2: ${p2}`);
 }
-
-
