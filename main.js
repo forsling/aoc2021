@@ -1,15 +1,7 @@
+//This array controls what days to execute, adjust at will
+let days = [1,2,3,5];
 
-import day1 from './solutions/day1.js';
-await day1();
-
-import day2 from './solutions/day2.js';
-await day2();
-
-import day3 from './solutions/day3.js';
-await day3();
-
-import day4 from './solutions/day4.js';
-await day4();
-
-import day5 from './solutions/day5.js';
-await day5();
+for (let dayNum of days) {
+    let dayImport = await import(`./solutions/day${dayNum}.js`);
+    await dayImport.default();
+}
