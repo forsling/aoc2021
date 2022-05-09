@@ -1,9 +1,4 @@
-import {
-    getInput,
-    getIntInput
-} from '../input.js';
-const input = await getInput(1);
-const numInput = await getIntInput(1);
+import { getInputLines, getIntInputLines } from '../input.js';
 
 function executePart1(input) {
     let increases = 0;
@@ -44,11 +39,13 @@ const executePart2b = (input, prevSum = false, increases = 0) => {
     return executePart2b([b, c, ...rest], sum, (increases += prevSum && sum > prevSum ? 1 : 0));
 }
 
-export default () => {
+export default async () => {
+    const input = await getInputLines(1);
     const p1 = executePart1(input);
 
+    const numInput = await getIntInputLines(1);
     const p2 = executePart2(numInput);
-    
     const p2b = executePart2b(numInput);
+    
     console.log(`Day 1: Part 1 = ${p1} Part2a = ${p2} Part2b = ${p2b}`);
 }

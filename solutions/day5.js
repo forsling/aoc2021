@@ -1,16 +1,4 @@
-import { readFileSync } from 'fs';
-let exampleData = [
-    "0,9 -> 5,9",
-    "8,0 -> 0,8",
-    "9,4 -> 3,4",
-    "2,2 -> 2,1",
-    "7,0 -> 7,4",
-    "6,4 -> 2,0",
-    "0,9 -> 2,9",
-    "3,4 -> 1,4",
-    "0,0 -> 8,8",
-    "5,5 -> 8,2"
-]
+import { getText } from '../input.js';
 
 const printGrid = (grid) => {
     for (let i = 0; i < grid.length; i++) {
@@ -82,9 +70,22 @@ const execute = (input) => {
     return result;
 }
 
-export default () => {
-    let rawInput = readFileSync("input/day5.txt", 'utf8');
-    let inputLines = rawInput.split("\n");
+export default async () => {
+    let exampleData = [
+        "0,9 -> 5,9",
+        "8,0 -> 0,8",
+        "9,4 -> 3,4",
+        "2,2 -> 2,1",
+        "7,0 -> 7,4",
+        "6,4 -> 2,0",
+        "0,9 -> 2,9",
+        "3,4 -> 1,4",
+        "0,0 -> 8,8",
+        "5,5 -> 8,2"
+    ]
+
+    let inputText = await getText(5);
+    let inputLines = inputText.split("\n");
 
     const allLines = [];
     for (let line of inputLines) {

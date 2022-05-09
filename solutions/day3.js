@@ -1,20 +1,4 @@
-import { getInput } from '../input.js';
-let input = await getInput(3);
-
-let exampleInput = [
-    "00100",
-    "11110",
-    "10110",
-    "10111",
-    "10101",
-    "01111",
-    "00111",
-    "11100",
-    "10000",
-    "11001",
-    "00010",
-    "01010"
-];
+import { getInputLines } from '../input.js';
 
 let executePart1 = (input) => {   
     let maxInputLen = Math.max(...(input.map(el => el.length)));
@@ -99,7 +83,24 @@ let executePart2 = (input) => {
     return lifeSupportRating;
 }
 
-export default () => {
+export default async () => {
+    let exampleInput = [
+        "00100",
+        "11110",
+        "10110",
+        "10111",
+        "10101",
+        "01111",
+        "00111",
+        "11100",
+        "10000",
+        "11001",
+        "00010",
+        "01010"
+    ];
+    
+    let input = await getInputLines(3);
+
     let p1 = executePart1(input);
     console.log("Day 3 Part 1: " + p1);
 

@@ -1,14 +1,4 @@
-import { getInput } from '../input.js';
-let input = await getInput(2);
-
-let exampleInput = [
-    "forward 5",
-    "down 5",
-    "forward 8",
-    "up 3",
-    "down 8",
-    "forward 2"
-];
+import { getInputLines } from '../input.js';
 
 const executePart1 = (input) => {
     let hpos = 0;
@@ -76,7 +66,18 @@ const executePart2 = (input) => {
     return finalPos;
 }
 
-export default () => {
+export default async () => {
+    let exampleInput = [
+        "forward 5",
+        "down 5",
+        "forward 8",
+        "up 3",
+        "down 8",
+        "forward 2"
+    ];
+    
+    let input = await getInputLines(2);
+
     let p1 = executePart1(input);
     console.log("Day 2 Part 1: " + p1);
 

@@ -1,15 +1,15 @@
 
 import day1 from './solutions/day1.js';
-//day1();
+await day1();
 
 import day2 from './solutions/day2.js';
-//day2();
+await day2();
 
 import day3 from './solutions/day3.js';
-//day3();
+await day3();
 
 import day4 from './solutions/day4.js';
-//day4();
+await day4();
 
 import day5 from './solutions/day5.js';
-day5();
+await day5();
