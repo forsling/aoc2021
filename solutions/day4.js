@@ -132,8 +132,8 @@ export default async () => {
     let input = await getText(4);
     let { firstBoard, lastBoard } = execute(input);
     if (firstBoard) {
-        console.log(`Day4 Part1: First board to get bingo was board ${firstBoard.boardIndex} with score: ${firstBoard.getScore()}`);
-        console.log(`Day4 Part2: Last board to get bingo was board ${lastBoard.boardIndex} with score: ${lastBoard.getScore()}`);
+        console.log(`Day 4 Part 1: First board to get bingo was board ${firstBoard.boardIndex} with score: ${firstBoard.getScore()}`);
+        console.log(`Day 4 Part 2: Last board to get bingo was board ${lastBoard.boardIndex} with score: ${lastBoard.getScore()}`);
     } else {
         console.log(`No board was able to get bingo! :(`);
     }

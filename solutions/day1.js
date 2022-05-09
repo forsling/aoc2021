@@ -46,6 +46,7 @@ export default async () => {
     const numInput = await getIntInputLines(1);
     const p2 = executePart2(numInput);
     const p2b = executePart2b(numInput);
-    
-    console.log(`Day 1: Part 1 = ${p1} Part2a = ${p2} Part2b = ${p2b}`);
+
+    console.log(`Day 1 Part 1: ${p1}`);
+    console.log(`Day 1 Part2a: ${p2} Part2b: ${p2b}`);
 }

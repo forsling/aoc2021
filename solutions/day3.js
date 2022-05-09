@@ -33,7 +33,7 @@ let executePart1 = (input) => {
     let epsilon = gamma ^ mask;
 
     let powerConsumption = gamma * epsilon;
-    console.log(`Gamma value is ${gamma} (binary ${commonBits}), epsilon value is ${epsilon} (binary ${epsilon.toString(2)}) Giving a power consuption of ${powerConsumption}`);
+    //console.log(`Gamma value is ${gamma} (binary ${commonBits}), epsilon value is ${epsilon} (binary ${epsilon.toString(2)}) Giving a power consuption of ${powerConsumption}`);
     return powerConsumption;
 }
 

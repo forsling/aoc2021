@@ -27,7 +27,6 @@ const executePart1 = (input) => {
         }
     }
 
-    console.log(`Stopped at horizontal position ${hpos} and depth ${depth}`);
     let finalPos = hpos * depth;
     return finalPos;
 }
@@ -61,7 +60,6 @@ const executePart2 = (input) => {
         }
     }
 
-    console.log(`Stopped at horizontal position ${hpos} and depth ${depth}`);
     let finalPos = hpos * depth;
     return finalPos;
 }
@@ -75,7 +73,7 @@ export default async () => {
         "down 8",
         "forward 2"
     ];
-    
+
     let input = await getInputLines(2);
 
     let p1 = executePart1(input);
