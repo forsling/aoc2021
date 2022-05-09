@@ -1,31 +1,25 @@
 import { getText } from '../input.js';
 import { EOL } from 'os'
 
-class Slot {
-    constructor(value) {
-        this.value = value;
-        this.called = false;
-    }
-}
-
 class Board {
     constructor(boardstring, boardIndex) {
         this.boardIndex = boardIndex;
         this.slots = [];
         this.lastCalled = null;
         this.hasBingo = false;
+        
         boardstring = boardstring.trim();
         let t1 = boardstring.replace(/\n/g, " ");
         let t2 = t1.split(/\s+/);
         for (let s of t2) {
-            this.slots.push(new Slot(s));
+            this.slots.push({ number: s, called: false});
         }
     }
 
     getSlotIndexByNumber(number) {
         for (let i in this.slots) {
             let slot = this.slots[i];
-            if (slot.value == number) {
+            if (slot.number == number) {
                 return i;
             }
         }
@@ -33,8 +27,9 @@ class Board {
     }
 
     call(number) {
+        //Return true if the number made the board get bingo, false otherwise
         if (this.hasBingo) {
-            return;
+            return false;
         }
         let sIndex = this.getSlotIndexByNumber(number);
         if (sIndex) {
@@ -42,41 +37,36 @@ class Board {
             sIndex = Number.parseInt(sIndex)
             this.slots[sIndex].called = true;
 
-            function checkBingoForSlots(slots) {
-                let bingoStatus = true;
-                for (let slot of slots) {
-                    if (!slot.called) {
-                        bingoStatus = false;
-                        break;
+            //We only need to check the row and column for bingo,
+            //as numbers are called, since diagonals are not allowed 
+            function checkBingoForSlots(...rowsAndCols) {
+                for (let slots of rowsAndCols) {
+                    let bingoStatus = true;
+                    for (let slot of slots) {
+                        if (!slot.called) {
+                            bingoStatus = false;
+                            break;
+                        }
+                    }
+                    if (bingoStatus) {
+                        return true;
                     }
                 }
-                return bingoStatus;
+                return false;
             }
         
-            //Eftersom diagonaler inte räknas behöver vi endast undersöka om 
-            //raden eller kolumnen för det utropade numret har gett bingo.
-
             let row = Math.ceil((sIndex + 1) / 5);
             let rowSlots = this.getRow(row);
-            if (checkBingoForSlots(rowSlots)) {
-                this.hasBingo = true;
-                this.callBingo();
-                return;
-            }
 
             let column = (sIndex % 5) + 1;
             let columnSlots = this.getCol(column);
         
-            if (checkBingoForSlots(columnSlots)) {
+            if (checkBingoForSlots(rowSlots, columnSlots)) {
                 this.hasBingo = true;
-                this.callBingo();
-            }            
+                return this;
+            }
         }
-    }
-
-    callBingo() {
-        let score = this.getScore();
-        console.log(`Bingo for board ${this.boardIndex} with score: ${score}`);
+        return false;
     }
 
     getRow(rowNum) {
@@ -102,7 +92,7 @@ class Board {
         let unmarkedScore = 0;
         for (let slot of this.slots) {
             if (!slot.called) {
-                unmarkedScore += Number.parseInt(slot.value);
+                unmarkedScore += Number.parseInt(slot.number);
             }
         }
         let finalScore = unmarkedScore * Number.parseInt(this.lastCalled);
@@ -113,9 +103,7 @@ class Board {
 let execute = (input) => {
     let splitIndex = input.indexOf('\n');
 
-    //Skapa bingobräden
     let rawBoards = input.substring(splitIndex + 1);
-
     let boardStrings = rawBoards.split(`${EOL}${EOL}`);
     let boards = [];
     for (let boardIndex in boardStrings) {
@@ -124,22 +112,30 @@ let execute = (input) => {
     }
 
     let bingoCalls = input.substring(0, splitIndex).split(',');
-
-    let calls = 0;
-    let callNumber = (number) => {
-        calls++;
+    let firstBoard = null;
+    let lastBoard = null;
+    for (let number of bingoCalls) {
         for (let board of boards) {
-            board.call(number);
+            let bingoBoard = board.call(number);
+            if (bingoBoard) {
+                if (!firstBoard) {
+                    firstBoard = bingoBoard;
+                }
+                lastBoard = bingoBoard;
+            }
         }
     }
-
-    for (let call of bingoCalls) {
-        callNumber(call)
-    }
+    return { firstBoard, lastBoard }
 }
-
 
 export default async () => {
     let input = await getText(4);
-    execute(input);
+    let { firstBoard, lastBoard } = execute(input);
+    if (firstBoard) {
+        console.log(`Day4 Part1: First board to get bingo was board ${firstBoard.boardIndex} with score: ${firstBoard.getScore()}`);
+        console.log(`Day4 Part2: Last board to get bingo was board ${lastBoard.boardIndex} with score: ${lastBoard.getScore()}`);
+    } else {
+        console.log(`No board was able to get bingo! :(`);
+    }
+
 }
