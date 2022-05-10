@@ -1,11 +1,7 @@
 //This array controls what days to execute, adjust at will
-let days = [1,2,3,4,5,6];
+let days = [1,2,3,4,5,6,7];
 
 for (let dayNum of days) {
-    try {
-        let dayImport = await import(`./solutions/day${dayNum}.js`);
-        await dayImport.default();
-    } catch (err) {
-        console.log(`Unable to import ${dayNum}: ${err.toString()}`);
-    }
+    let dayImport = await import(`./solutions/day${dayNum}.js`);
+    await dayImport.default();
 }
